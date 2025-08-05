@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thai Learning App - Learn Thai Tones & Conversation</title>
+    
+    <!-- PWA Configuration -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4F46E5">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Thai Learning">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Navigation -->
+        <nav class="nav-bar">
+            <div class="nav-container">
+                <h1 class="app-title">
+                    <i class="fas fa-language"></i>
+                    Thai Learning
+                </h1>
+                <div class="nav-stats">
+                    <span id="streak-counter">🔥 0</span>
+                    <span id="points-counter">⭐ 0</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Home Screen -->
+            <section id="home-screen" class="screen active">
+                <div class="welcome-section">
+                    <h2>สวัสดี! Welcome to Thai Learning</h2>
+                    <p>Master Thai tones, conversation, and business language</p>
+                </div>
+
+                <div class="learning-modules">
+                    <div class="module-card" data-module="flashcards">
+                        <div class="module-icon">📚</div>
+                        <h3>Flashcards</h3>
+                        <p>Learn vocabulary with spaced repetition</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <div class="module-card" data-module="tones">
+                        <div class="module-icon">🎵</div>
+                        <h3>Tone Recognition</h3>
+                        <p>Master the 5 Thai tones with audio games</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <div class="module-card" data-module="conversation">
+                        <div class="module-icon">💬</div>
+                        <h3>Conversation</h3>
+                        <p>Everyday and business Thai phrases</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <div class="module-card" data-module="review">
+                        <div class="module-icon">🔄</div>
+                        <h3>Review</h3>
+                        <p>Practice cards due for review</p>
+                        <div class="review-count">0 due</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Flashcard Screen -->
+            <section id="flashcard-screen" class="screen">
+                <div class="screen-header">
+                    <button class="back-btn"><i class="fas fa-arrow-left"></i></button>
+                    <h2>Flashcards</h2>
+                    <div class="session-progress">
+                        <span id="card-counter">1 / 10</span>
+                    </div>
+                </div>
+
+                <div class="flashcard-container">
+                    <div class="flashcard" id="current-card">
+                        <div class="card-front">
+                            <div class="thai-text" id="thai-word">สวัสดี</div>
+                            <button class="audio-btn" id="play-audio">
+                                <i class="fas fa-volume-up"></i>
+                            </button>
+                        </div>
+                        <div class="card-back hidden">
+                            <div class="english-text" id="english-word">Hello</div>
+                            <div class="phonetic-text" id="phonetic-word">sà-wàt-dii</div>
+                            <div class="tone-indicator" id="tone-info">Mid-Low-Mid</div>
+                        </div>
+                    </div>
+
+                    <div class="card-actions">
+                        <button class="flip-btn" id="flip-card">Show Answer</button>
+                    </div>
+
+                    <div class="difficulty-buttons hidden" id="difficulty-buttons">
+                        <button class="diff-btn hard" data-difficulty="hard">
+                            <i class="fas fa-times"></i>
+                            Hard
+                        </button>
+                        <button class="diff-btn medium" data-difficulty="medium">
+                            <i class="fas fa-minus"></i>
+                            Medium
+                        </button>
+                        <button class="diff-btn easy" data-difficulty="easy">
+                            <i class="fas fa-check"></i>
+                            Easy
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tone Recognition Screen -->
+            <section id="tone-screen" class="screen">
+                <div class="screen-header">
+                    <button class="back-btn"><i class="fas fa-arrow-left"></i></button>
+                    <h2>Tone Recognition</h2>
+                    <div class="score">Score: <span id="tone-score">0</span></div>
+                </div>
+
+                <div class="tone-game-container">
+                    <div class="tone-instruction">
+                        <p>Listen to the word and select the correct tone pattern:</p>
+                    </div>
+
+                    <div class="audio-player">
+                        <button class="play-tone-btn" id="play-tone">
+                            <i class="fas fa-play"></i>
+                            Play Audio
+                        </button>
+                        <div class="thai-display" id="tone-thai-word">กา</div>
+                    </div>
+
+                    <div class="tone-options">
+                        <button class="tone-option" data-tone="mid">
+                            <div class="tone-line mid-tone"></div>
+                            <span>Mid Tone</span>
+                        </button>
+                        <button class="tone-option" data-tone="low">
+                            <div class="tone-line low-tone"></div>
+                            <span>Low Tone</span>
+                        </button>
+                        <button class="tone-option" data-tone="falling">
+                            <div class="tone-line falling-tone"></div>
+                            <span>Falling Tone</span>
+                        </button>
+                        <button class="tone-option" data-tone="high">
+                            <div class="tone-line high-tone"></div>
+                            <span>High Tone</span>
+                        </button>
+                        <button class="tone-option" data-tone="rising">
+                            <div class="tone-line rising-tone"></div>
+                            <span>Rising Tone</span>
+                        </button>
+                    </div>
+
+                    <div class="feedback-area" id="tone-feedback"></div>
+                </div>
+            </section>
+
+            <!-- Conversation Screen -->
+            <section id="conversation-screen" class="screen">
+                <div class="screen-header">
+                    <button class="back-btn"><i class="fas fa-arrow-left"></i></button>
+                    <h2>Conversation Practice</h2>
+                </div>
+
+                <div class="conversation-categories">
+                    <div class="category-tabs">
+                        <button class="tab-btn active" data-category="everyday">Everyday</button>
+                        <button class="tab-btn" data-category="business">Business</button>
+                    </div>
+
+                    <div class="phrase-list" id="phrase-list">
+                        <!-- Phrases will be populated by JavaScript -->
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+    <script>
+        // Register service worker for PWA
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+{
+    "name": "Thai Learning App",
+    "short_name": "Thai Learn",
+    "description": "Learn Thai language with flashcards, tone recognition, and conversation practice",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#667eea",
+    "theme_color": "#4F46E5",
+    "orientation": "portrait",
+    "icons": [
+        {
+            "src": "icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "categories": ["education", "productivity"],
+    "lang": "en",
+    "dir": "ltr"
+}
