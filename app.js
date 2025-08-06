@@ -26,6 +26,14 @@ class ThaiLearningApp {
         this.phrases = conversationPhrases;
         this.toneExercises = toneExercises;
         this.toneInfo = toneInfo;
+        this.pronunciationPhrases = pronunciationPhrases;
+        
+        // Pronunciation test state
+        this.currentPronunciationPhrase = null;
+        this.pronunciationScore = 0;
+        this.pronunciationIndex = 0;
+        this.recognition = null;
+        this.isRecording = false;
     }
 
     setupEventListeners() {

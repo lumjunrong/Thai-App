@@ -471,6 +471,131 @@ const categories = {
     time: "Time & Dates"
 };
 
+// Pronunciation test phrases - combining vocabulary and conversation phrases
+const pronunciationPhrases = [
+    // Basic greetings and common phrases
+    {
+        id: 1,
+        thai: "สวัสดีครับ",
+        english: "Hello (male)",
+        phonetic: "sà-wàt-dii khráp",
+        difficulty: 1,
+        category: "greetings"
+    },
+    {
+        id: 2,
+        thai: "สวัสดีค่ะ",
+        english: "Hello (female)",
+        phonetic: "sà-wàt-dii khâ",
+        difficulty: 1,
+        category: "greetings"
+    },
+    {
+        id: 3,
+        thai: "ขอบคุณครับ",
+        english: "Thank you (male)",
+        phonetic: "khɔ̀ɔp-khun khráp",
+        difficulty: 1,
+        category: "greetings"
+    },
+    {
+        id: 4,
+        thai: "ขอบคุณค่ะ",
+        english: "Thank you (female)",
+        phonetic: "khɔ̀ɔp-khun khâ",
+        difficulty: 1,
+        category: "greetings"
+    },
+    {
+        id: 5,
+        thai: "ขอโทษครับ",
+        english: "Excuse me (male)",
+        phonetic: "khɔ̌ɔ-thôot khráp",
+        difficulty: 2,
+        category: "greetings"
+    },
+    {
+        id: 6,
+        thai: "คุณชื่ออะไร",
+        english: "What's your name?",
+        phonetic: "khun chɯ̂ɯ a-rai",
+        difficulty: 2,
+        category: "conversation"
+    },
+    {
+        id: 7,
+        thai: "ผมชื่อจอห์น",
+        english: "My name is John (male)",
+        phonetic: "phǒm chɯ̂ɯ jɔɔn",
+        difficulty: 2,
+        category: "conversation"
+    },
+    {
+        id: 8,
+        thai: "คุณเป็นอย่างไรบ้าง",
+        english: "How are you?",
+        phonetic: "khun pen yàang-rai bâang",
+        difficulty: 3,
+        category: "conversation"
+    },
+    {
+        id: 9,
+        thai: "ผมสบายดีครับ",
+        english: "I'm fine (male)",
+        phonetic: "phǒm sa-baai dii khráp",
+        difficulty: 2,
+        category: "conversation"
+    },
+    {
+        id: 10,
+        thai: "ห้องน้ำอยู่ที่ไหน",
+        english: "Where is the bathroom?",
+        phonetic: "hɔ̂ng-náam yùu thîi-nǎi",
+        difficulty: 3,
+        category: "practical"
+    },
+    {
+        id: 11,
+        thai: "ราคาเท่าไหร่",
+        english: "How much does it cost?",
+        phonetic: "raa-khaa thâw-rài",
+        difficulty: 3,
+        category: "practical"
+    },
+    {
+        id: 12,
+        thai: "ผมต้องไปประชุม",
+        english: "I need to go to a meeting",
+        phonetic: "phǒm tɔ̂ng pai pra-chum",
+        difficulty: 4,
+        category: "business"
+    },
+    {
+        id: 13,
+        thai: "ยินดีที่ได้รู้จัก",
+        english: "Nice to meet you",
+        phonetic: "yin-dii thîi dâi rúu-jàk",
+        difficulty: 4,
+        category: "business"
+    },
+    {
+        id: 14,
+        thai: "กรุณาส่งอีเมลให้ผม",
+        english: "Please send me an email",
+        phonetic: "ga-ru-naa sòng ii-meel hâi phǒm",
+        difficulty: 5,
+        category: "business"
+    },
+    {
+        id: 15,
+        thai: "เรามีประชุมเมื่อไหร่",
+        english: "When do we have a meeting?",
+        phonetic: "rao mii pra-chum mɯ̂a-rài",
+        difficulty: 4,
+        category: "business"
+    }
+];
+
 // Export all data
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
@@ -478,6 +603,7 @@ if (typeof module !== 'undefined' && module.exports) {
         conversationPhrases,
         toneExercises,
         toneInfo,
-        categories
+        categories,
+        pronunciationPhrases
     };
 }
