@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thai Audio Test - Language Learning</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-microphone"></i> Thai Audio Test</h1>
+            <p>Listen to Thai phrases and repeat them using your microphone</p>
+        </header>
+
+        <main>
+            <div class="test-area">
+                <div class="phrase-section">
+                    <h2>Listen and Repeat</h2>
+                    <div class="phrase-display">
+                        <div class="thai-text" id="thaiPhrase">สวัสดีครับ</div>
+                        <div class="english-text" id="englishTranslation">Hello (male speaker)</div>
+                        <div class="phonetic-text" id="phoneticText">sà-wàt-dii khráp</div>
+                    </div>
+                    
+                    <div class="audio-controls">
+                        <button id="playButton" class="btn btn-primary">
+                            <i class="fas fa-play"></i> Play Phrase
+                        </button>
+                        <button id="slowPlayButton" class="btn btn-secondary">
+                            <i class="fas fa-play"></i> Play Slow
+                        </button>
+                    </div>
+                </div>
+
+                <div class="recording-section">
+                    <h2>Your Turn</h2>
+                    <div class="mic-controls">
+                        <button id="recordButton" class="btn btn-record">
+                            <i class="fas fa-microphone"></i> Start Recording
+                        </button>
+                        <button id="stopButton" class="btn btn-stop" disabled>
+                            <i class="fas fa-stop"></i> Stop Recording
+                        </button>
+                    </div>
+                    
+                    <div class="recording-status">
+                        <div id="recordingIndicator" class="recording-indicator">
+                            <i class="fas fa-circle"></i> Ready to record
+                        </div>
+                        <div id="recordingTimer" class="recording-timer">00:00</div>
+                    </div>
+                </div>
+
+                <div class="recognition-section">
+                    <h2>Recognition Results</h2>
+                    <div class="results-display">
+                        <div class="recognized-text">
+                            <label>What you said:</label>
+                            <div id="recognizedText" class="text-output">Click "Start Recording" to begin</div>
+                        </div>
+                        <div class="accuracy-score">
+                            <label>Accuracy Score:</label>
+                            <div id="accuracyScore" class="score-display">--</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="feedback-section">
+                    <div id="feedbackMessage" class="feedback-message"></div>
+                    <div class="action-buttons">
+                        <button id="nextPhraseButton" class="btn btn-success">
+                            <i class="fas fa-forward"></i> Next Phrase
+                        </button>
+                        <button id="repeatPhraseButton" class="btn btn-warning">
+                            <i class="fas fa-redo"></i> Try Again
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="progress-section">
+                <h3>Progress</h3>
+                <div class="progress-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Phrases Completed:</span>
+                        <span id="phrasesCompleted" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Average Accuracy:</span>
+                        <span id="averageAccuracy" class="stat-value">0%</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Current Level:</span>
+                        <span id="currentLevel" class="stat-value">Beginner</span>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div id="progressFill" class="progress-fill"></div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <div class="instructions">
+                <h3>Instructions</h3>
+                <ol>
+                    <li>Click "Play Phrase" to hear the Thai phrase</li>
+                    <li>Click "Start Recording" and repeat the phrase in Thai</li>
+                    <li>Click "Stop Recording" when finished</li>
+                    <li>View your accuracy score and feedback</li>
+                    <li>Continue to the next phrase or try again</li>
+                </ol>
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
