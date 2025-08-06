@@ -149,6 +149,9 @@ class ThaiLearningApp {
             case 'tones':
                 this.startToneRecognition();
                 break;
+            case 'pronunciation':
+                this.startPronunciationTest();
+                break;
             case 'conversation':
                 this.navigateToScreen('conversation-screen');
                 this.loadConversationPhrases();
@@ -422,6 +425,8 @@ class ThaiLearningApp {
             cardsReviewed: 0,
             toneCorrect: 0,
             toneIncorrect: 0,
+            pronunciationAttempts: 0,
+            pronunciationCorrect: 0,
             streak: 0,
             points: 0,
             lastStudyDate: null
@@ -429,7 +434,9 @@ class ThaiLearningApp {
     }
 
     saveStats() {
-        this.userStats.points = this.userStats.cardsReviewed * 5 + this.userStats.toneCorrect * 10;
+        this.userStats.points = this.userStats.cardsReviewed * 5 + 
+                               this.userStats.toneCorrect * 10 + 
+                               this.userStats.pronunciationCorrect * 15;
         localStorage.setItem('thaiLearningStats', JSON.stringify(this.userStats));
         this.updateUI();
     }
@@ -477,6 +484,299 @@ class ThaiLearningApp {
 
     startReviewSession() {
         this.startFlashcardSession(); // Same as flashcard session for now
+    }
+
+    // Pronunciation Test System
+    startPronunciationTest() {
+        this.pronunciationIndex = 0;
+        this.pronunciationScore = 0;
+        this.navigateToScreen('pronunciation-screen');
+        this.initializeSpeechRecognition();
+        this.loadNextPronunciationPhrase();
+        this.updatePronunciationScore();
+    }
+
+    initializeSpeechRecognition() {
+        if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+            this.showPronunciationError('Speech recognition not supported in this browser. Please use Chrome or Edge for the best experience.');
+            return;
+        }
+
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        this.recognition = new SpeechRecognition();
+        
+        this.recognition.lang = 'th-TH'; // Thai language
+        this.recognition.continuous = false;
+        this.recognition.interimResults = false;
+        this.recognition.maxAlternatives = 3;
+
+        this.recognition.onstart = () => {
+            this.isRecording = true;
+            this.updateMicrophoneUI('recording');
+            this.startSoundWaveAnimation();
+        };
+
+        this.recognition.onresult = (event) => {
+            const result = event.results[0];
+            const transcript = result[0].transcript;
+            const confidence = result[0].confidence;
+            
+            this.processPronunciationResult(transcript, confidence);
+        };
+
+        this.recognition.onerror = (event) => {
+            this.isRecording = false;
+            this.updateMicrophoneUI('ready');
+            this.stopSoundWaveAnimation();
+            
+            let errorMessage = 'Speech recognition error: ';
+            switch(event.error) {
+                case 'no-speech':
+                    errorMessage += 'No speech detected. Please try again.';
+                    break;
+                case 'audio-capture':
+                    errorMessage += 'Microphone not accessible. Please check permissions.';
+                    break;
+                case 'not-allowed':
+                    errorMessage += 'Microphone permission denied. Please allow microphone access.';
+                    break;
+                default:
+                    errorMessage += event.error;
+            }
+            
+            this.showPronunciationFeedback(errorMessage, 'error');
+        };
+
+        this.recognition.onend = () => {
+            this.isRecording = false;
+            this.updateMicrophoneUI('ready');
+            this.stopSoundWaveAnimation();
+        };
+    }
+
+    loadNextPronunciationPhrase() {
+        if (this.pronunciationIndex >= this.pronunciationPhrases.length) {
+            this.endPronunciationTest();
+            return;
+        }
+
+        this.currentPronunciationPhrase = this.pronunciationPhrases[this.pronunciationIndex];
+        
+        // Update UI
+        document.getElementById('prompt-thai').textContent = this.currentPronunciationPhrase.thai;
+        document.getElementById('prompt-english').textContent = this.currentPronunciationPhrase.english;
+        document.getElementById('prompt-phonetic').textContent = this.currentPronunciationPhrase.phonetic;
+        
+        // Reset feedback
+        document.getElementById('recognized-text').textContent = 'Press and hold the microphone to start';
+        document.getElementById('accuracy-display').innerHTML = '';
+        document.getElementById('accuracy-display').className = 'accuracy-score';
+        
+        // Hide/show buttons
+        document.getElementById('next-pronunciation').classList.add('hidden');
+        document.getElementById('skip-pronunciation').classList.remove('hidden');
+    }
+
+    startRecording() {
+        if (!this.recognition || this.isRecording) return;
+        
+        try {
+            this.recognition.start();
+            this.updateMicrophoneUI('recording');
+        } catch (error) {
+            console.error('Error starting speech recognition:', error);
+            this.showPronunciationFeedback('Failed to start recording. Please try again.', 'error');
+        }
+    }
+
+    stopRecording() {
+        if (!this.recognition || !this.isRecording) return;
+        
+        try {
+            this.recognition.stop();
+            this.updateMicrophoneUI('processing');
+        } catch (error) {
+            console.error('Error stopping speech recognition:', error);
+        }
+    }
+
+    processPronunciationResult(transcript, confidence) {
+        const recognizedText = transcript.trim();
+        const targetText = this.currentPronunciationPhrase.thai;
+        
+        // Display what was recognized
+        document.getElementById('recognized-text').textContent = recognizedText || 'No speech detected';
+        
+        // Calculate similarity score
+        const accuracy = this.calculatePronunciationAccuracy(recognizedText, targetText);
+        const confidenceScore = confidence || 0;
+        
+        // Combined score (weighted average)
+        const finalScore = Math.round((accuracy * 0.7 + confidenceScore * 0.3) * 100);
+        
+        this.displayPronunciationFeedback(finalScore, recognizedText, targetText);
+        
+        // Update user stats
+        this.userStats.pronunciationAttempts = (this.userStats.pronunciationAttempts || 0) + 1;
+        if (finalScore >= 70) {
+            this.userStats.pronunciationCorrect = (this.userStats.pronunciationCorrect || 0) + 1;
+            this.pronunciationScore += Math.max(10, finalScore / 5);
+        }
+        
+        this.updatePronunciationScore();
+        this.saveStats();
+        
+        // Show next button
+        document.getElementById('next-pronunciation').classList.remove('hidden');
+        document.getElementById('skip-pronunciation').classList.add('hidden');
+    }
+
+    calculatePronunciationAccuracy(recognized, target) {
+        if (!recognized || !target) return 0;
+        
+        // Normalize both strings (remove spaces, convert to lowercase)
+        const normalizedRecognized = recognized.replace(/\s+/g, '').toLowerCase();
+        const normalizedTarget = target.replace(/\s+/g, '').toLowerCase();
+        
+        // If exact match, return 1.0
+        if (normalizedRecognized === normalizedTarget) {
+            return 1.0;
+        }
+        
+        // Calculate Levenshtein distance for similarity
+        const distance = this.levenshteinDistance(normalizedRecognized, normalizedTarget);
+        const maxLength = Math.max(normalizedRecognized.length, normalizedTarget.length);
+        
+        if (maxLength === 0) return 0;
+        
+        const similarity = 1 - (distance / maxLength);
+        return Math.max(0, similarity);
+    }
+
+    levenshteinDistance(str1, str2) {
+        const matrix = [];
+        
+        for (let i = 0; i <= str2.length; i++) {
+            matrix[i] = [i];
+        }
+        
+        for (let j = 0; j <= str1.length; j++) {
+            matrix[0][j] = j;
+        }
+        
+        for (let i = 1; i <= str2.length; i++) {
+            for (let j = 1; j <= str1.length; j++) {
+                if (str2.charAt(i - 1) === str1.charAt(j - 1)) {
+                    matrix[i][j] = matrix[i - 1][j - 1];
+                } else {
+                    matrix[i][j] = Math.min(
+                        matrix[i - 1][j - 1] + 1,
+                        matrix[i][j - 1] + 1,
+                        matrix[i - 1][j] + 1
+                    );
+                }
+            }
+        }
+        
+        return matrix[str2.length][str1.length];
+    }
+
+    displayPronunciationFeedback(score, recognized, target) {
+        const accuracyDisplay = document.getElementById('accuracy-display');
+        let feedbackClass = '';
+        let feedbackText = '';
+        
+        if (score >= 85) {
+            feedbackClass = 'accuracy-excellent';
+            feedbackText = `🎉 Excellent! ${score}% accuracy`;
+        } else if (score >= 70) {
+            feedbackClass = 'accuracy-good';
+            feedbackText = `👍 Good! ${score}% accuracy`;
+        } else if (score >= 50) {
+            feedbackClass = 'accuracy-needs-work';
+            feedbackText = `📚 Keep practicing! ${score}% accuracy`;
+        } else {
+            feedbackClass = 'accuracy-needs-work';
+            feedbackText = `💪 Try again! ${score}% accuracy`;
+        }
+        
+        accuracyDisplay.className = `accuracy-score ${feedbackClass}`;
+        accuracyDisplay.innerHTML = `
+            <div>${feedbackText}</div>
+            <small>Target: ${target}</small>
+        `;
+    }
+
+    updateMicrophoneUI(state) {
+        const micBtn = document.getElementById('mic-btn');
+        const micStatus = document.getElementById('mic-status');
+        const micText = micBtn.querySelector('.mic-text');
+        
+        micBtn.className = 'mic-btn';
+        
+        switch (state) {
+            case 'recording':
+                micBtn.classList.add('recording');
+                micStatus.textContent = 'Listening... Speak now!';
+                micText.textContent = 'Recording...';
+                break;
+            case 'processing':
+                micBtn.classList.add('processing');
+                micStatus.textContent = 'Processing your speech...';
+                micText.textContent = 'Processing...';
+                break;
+            case 'ready':
+            default:
+                micStatus.textContent = 'Ready to listen';
+                micText.textContent = 'Hold to Speak';
+                break;
+        }
+    }
+
+    startSoundWaveAnimation() {
+        const soundWave = document.getElementById('sound-wave');
+        soundWave.classList.add('active');
+    }
+
+    stopSoundWaveAnimation() {
+        const soundWave = document.getElementById('sound-wave');
+        soundWave.classList.remove('active');
+    }
+
+    nextPronunciationPhrase() {
+        this.pronunciationIndex++;
+        this.loadNextPronunciationPhrase();
+    }
+
+    updatePronunciationScore() {
+        document.getElementById('pronunciation-score').textContent = Math.round(this.pronunciationScore);
+    }
+
+    endPronunciationTest() {
+        const attempts = this.userStats.pronunciationAttempts || 0;
+        const correct = this.userStats.pronunciationCorrect || 0;
+        const accuracy = attempts > 0 ? Math.round((correct / attempts) * 100) : 0;
+        
+        alert(`Pronunciation test complete!\n\nFinal Score: ${Math.round(this.pronunciationScore)}\nAccuracy: ${accuracy}%\nPhrases completed: ${this.pronunciationIndex}`);
+        
+        this.navigateToScreen('home-screen');
+        this.updateUI();
+    }
+
+    showPronunciationError(message) {
+        document.getElementById('recognized-text').textContent = message;
+        document.getElementById('accuracy-display').innerHTML = `
+            <div style="color: #dc2626; font-weight: 600;">
+                ⚠️ ${message}
+            </div>
+        `;
+    }
+
+    showPronunciationFeedback(message, type = 'info') {
+        const color = type === 'error' ? '#dc2626' : '#6b7280';
+        document.getElementById('recognized-text').innerHTML = `
+            <span style="color: ${color};">${message}</span>
+        `;
     }
 }
 
