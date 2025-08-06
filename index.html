@@ -72,6 +72,15 @@
                         </div>
                     </div>
 
+                    <div class="module-card" data-module="pronunciation">
+                        <div class="module-icon">🎤</div>
+                        <h3>Pronunciation Test</h3>
+                        <p>Practice speaking Thai with voice recognition</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+
                     <div class="module-card" data-module="review">
                         <div class="module-icon">🔄</div>
                         <h3>Review</h3>
@@ -172,6 +181,67 @@
                     </div>
 
                     <div class="feedback-area" id="tone-feedback"></div>
+                </div>
+            </section>
+
+            <!-- Pronunciation Test Screen -->
+            <section id="pronunciation-screen" class="screen">
+                <div class="screen-header">
+                    <button class="back-btn"><i class="fas fa-arrow-left"></i></button>
+                    <h2>Pronunciation Test</h2>
+                    <div class="pronunciation-score">Score: <span id="pronunciation-score">0</span></div>
+                </div>
+
+                <div class="pronunciation-container">
+                    <div class="pronunciation-instruction">
+                        <p>Listen to the Thai phrase and repeat it clearly:</p>
+                    </div>
+
+                    <div class="prompt-card">
+                        <div class="prompt-thai" id="prompt-thai">สวัสดีครับ</div>
+                        <div class="prompt-english" id="prompt-english">Hello (male)</div>
+                        <div class="prompt-phonetic" id="prompt-phonetic">sà-wàt-dii khráp</div>
+                        
+                        <button class="play-prompt-btn" id="play-prompt">
+                            <i class="fas fa-volume-up"></i>
+                            Play Prompt
+                        </button>
+                    </div>
+
+                    <div class="voice-controls">
+                        <div class="microphone-section">
+                            <button class="mic-btn" id="mic-btn">
+                                <i class="fas fa-microphone"></i>
+                                <span class="mic-text">Hold to Speak</span>
+                            </button>
+                            <div class="mic-status" id="mic-status">Ready to listen</div>
+                        </div>
+
+                        <div class="voice-visualization">
+                            <div class="sound-wave" id="sound-wave">
+                                <div class="wave-bar"></div>
+                                <div class="wave-bar"></div>
+                                <div class="wave-bar"></div>
+                                <div class="wave-bar"></div>
+                                <div class="wave-bar"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pronunciation-feedback" id="pronunciation-feedback">
+                        <div class="feedback-content">
+                            <div class="what-you-said">
+                                <strong>What you said:</strong>
+                                <div id="recognized-text">Press and hold the microphone to start</div>
+                            </div>
+                            <div class="accuracy-score" id="accuracy-display"></div>
+                        </div>
+                    </div>
+
+                    <div class="pronunciation-actions">
+                        <button class="skip-btn" id="skip-pronunciation">Skip</button>
+                        <button class="next-btn hidden" id="next-pronunciation">Next Phrase</button>
+                    </div>
                 </div>
             </section>
 
