@@ -98,6 +98,47 @@ class ThaiLearningApp {
                 this.switchConversationCategory(category);
             });
         });
+
+        // Pronunciation test controls
+        const playPromptBtn = document.getElementById('play-prompt');
+        if (playPromptBtn) {
+            playPromptBtn.addEventListener('click', () => {
+                if (this.currentPronunciationPhrase) {
+                    this.playAudio(this.currentPronunciationPhrase.thai);
+                }
+            });
+        }
+
+        const micBtn = document.getElementById('mic-btn');
+        if (micBtn) {
+            micBtn.addEventListener('mousedown', () => this.startRecording());
+            micBtn.addEventListener('mouseup', () => this.stopRecording());
+            micBtn.addEventListener('mouseleave', () => this.stopRecording());
+            
+            // Touch events for mobile
+            micBtn.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                this.startRecording();
+            });
+            micBtn.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                this.stopRecording();
+            });
+        }
+
+        const skipBtn = document.getElementById('skip-pronunciation');
+        if (skipBtn) {
+            skipBtn.addEventListener('click', () => {
+                this.nextPronunciationPhrase();
+            });
+        }
+
+        const nextBtn = document.getElementById('next-pronunciation');
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => {
+                this.nextPronunciationPhrase();
+            });
+        }
     }
 
     navigateToModule(module) {
